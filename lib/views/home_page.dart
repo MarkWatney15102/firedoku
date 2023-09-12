@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firedoku/views/doku_main_page.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -44,24 +45,56 @@ class _HomePageState extends State<HomePage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: Container(
-        child: FutureBuilder<List>(
-          future: data,
-          builder: (context, snapshot) {
-            return Table(
-              children: const <TableRow>[
-                TableRow(
-                  children: <Widget>[
-                    TableCell(
-                      child: Text("data")
+      backgroundColor: const Color.fromARGB(255, 26, 25, 25),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(5, 15, 5, 15),
+          child: FutureBuilder<List>(
+            future: data,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final rows = <Container>[];
+      
+                snapshot.data!.forEach((element) {
+                  rows.add(
+                    Container(
+                      height: 100.0,
+                      width: 400,
+                      margin: const EdgeInsets.only(bottom: 15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color.fromARGB(255, 88, 88, 88),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              element['emergancyPlace'],
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     )
-                  ]
-                )
-              ],
-            );
-          },
+                  );
+                });
+      
+                return Column(
+                  children: rows,
+                );
+              }
+        
+              return const Text("No Data");
+            },
+          ),
         ),
-      )
+      ),
     );
   }
 }
